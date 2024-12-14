@@ -14,15 +14,21 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public Account createAccount (Account account) {
+    public Account createAccount (Account account) throws IllegalArgumentException, IllegalStateException{
        /** 
-       if(account.getPassword()!=null||account.getUsername()!=null||account.getPassword().length()<4 || account.getUsername().isBlank()){
+       if(account.getPassword()!=null||account.getPassword().length()<4 ){
             throw new IllegalArgumentException();
        }
-       if(accountRepository.findByUsername(account.getUsername()).isEmpty()){
-            throw new IllegalStateException();
+
+       if(account.getUsername()!=null|| account.getUsername().isBlank()){
+            throw new IllegalArgumentException();
+       }
+        */
+
+       if(accountRepository.findByUsername(account.getUsername()).isPresent()){
+            return null;
         }
-        */ 
+        
         return accountRepository.save(account);
     }
 
