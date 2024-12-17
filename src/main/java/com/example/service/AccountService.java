@@ -32,5 +32,9 @@ public class AccountService {
         return accountRepository.save(account);
     }
 
+    public Account login (String username, String password){
+        return accountRepository.findByUsernameAndPassword(username,password).orElse(null);
+    }
+
     
 }

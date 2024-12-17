@@ -48,17 +48,17 @@ public class SocialMediaController {
         return ResponseEntity.ok(messages);
     }
     @PatchMapping("/messages/{messageId}")
-    public ResponseEntity<?> updateMessage(@PathVariable Long messageId, @RequestBody String newMessageText){
-        Message updatedMessage = messageService.updateMessage(messageId,newMessageText);
+    public ResponseEntity<?> updateMessage(@PathVariable Integer messageId, @RequestBody Message newMessageText){
+        int updatedMessage = messageService.updateMessage(messageId,newMessageText.getMessageText());
         int rows = 1;
-        /**
-        if(updatedMessage!=null){
+        
+        if(updatedMessage==1){
             return ResponseEntity.ok(rows);
         }else{
             return ResponseEntity.status(400).body("Client error");
         }
-           */   
-        return ResponseEntity.status(400).body("Client error");
+              
+      //  return ResponseEntity.status(400).body("Client error");
 
     }
     @GetMapping("/messages")
@@ -66,8 +66,19 @@ public class SocialMediaController {
         List<Message> messages = messageService.getAllMessages();
         return ResponseEntity.ok(messages);
     }
+    @PostMapping("/login")
+    public ResponseEntity<?> loginEntity(@RequestBody Account account){
+        Account loggedInAccount = accountService.login(account.getUsername(),account.getPassword());
+
+        if(loggedInAccount!=null){
+            return ResponseEntity.ok(loggedInAccount);
+        }else{
+            return ResponseEntity.status(401).body("Unauthorized");
+        }
+
+    }
     @PostMapping("/messages")
-    public ResponseEntity<?> createMessagEntity (@RequestBody Message message){
+    public ResponseEntity<?> createMessageEntity (@RequestBody Message message){
         Message createdMessage = messageService.createMessage(message);
 
         if(createdMessage!=null){

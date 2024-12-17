@@ -52,15 +52,15 @@ public class MessageService {
         return null;
 
     }
-    public Message updateMessage(long id, String replacement){
-        Optional<Message> optionalMessage = messageRepository.findById(id);
+    public int updateMessage(Integer id, String replacement){
+        Optional<Message> optionalMessage = messageRepository.findByMessageId(id);
         if(optionalMessage.isPresent()&&replacement != null && !replacement.isBlank() && replacement.length() <= 255){
-            Message message = optionalMessage.get();
+            Message message = messageRepository.findByMessageId(id).get();
             message.setMessageText(replacement);
-            return messageRepository.save(message);
-
+            messageRepository.save(message);
+            return 1;
         }
-        return null;
+        return 0;
     }
 
 
