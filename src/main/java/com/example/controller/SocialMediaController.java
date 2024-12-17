@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.context.ApplicationContext;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller using Spring. The endpoints you will need can be
@@ -16,28 +17,37 @@ import org.springframework.http.ResponseEntity;
  * refer to prior mini-project labs and lecture materials for guidance on how a controller may be built.
  */
 @RestController
-//@ResponseBody
 @RequestMapping
 public class SocialMediaController {
 
     @Autowired
-    MessageService messageService;
+    MessageService messageService ;
     @Autowired
     AccountService accountService;
     
-    @GetMapping("/{messageId}")
-    public ResponseEntity<?> getMessagEntity(@PathVariable long id){
+   
+    @GetMapping("/messages/{messageId}")
+    public ResponseEntity<Message> getMessageEntity(@PathVariable("messageId") Integer id)  {
+        
         Message foundMessage = messageService.getMessageById(id);
-        /**  
-        if(foundMessage!=null){
-            return ResponseEntity.ok(foundMessage);
-        }else{
-            return ResponseEntity.status(200).body(null);
-        }
-            */
-        return ResponseEntity.status(200).build();
+        
+       // return ResponseEntity.ok(foundMessage);
+       if(foundMessage==null){
+        return ResponseEntity.ok().build();
+       }else{
+        return ResponseEntity.ok(foundMessage);
+       }
+        
+        
     }
-    @PatchMapping("/{messageId}")
+    
+    @GetMapping("/accounts/{accountId}/messages")
+    public ResponseEntity<List<Message>> getAllMessagesByUser (@PathVariable("accountId") Integer id){
+        List<Message> messages = messageService.getAllMessagesByUser(id);
+
+        return ResponseEntity.ok(messages);
+    }
+    @PatchMapping("/messages/{messageId}")
     public ResponseEntity<?> updateMessage(@PathVariable Long messageId, @RequestBody String newMessageText){
         Message updatedMessage = messageService.updateMessage(messageId,newMessageText);
         int rows = 1;
@@ -56,7 +66,16 @@ public class SocialMediaController {
         List<Message> messages = messageService.getAllMessages();
         return ResponseEntity.ok(messages);
     }
-    
+    @PostMapping("/messages")
+    public ResponseEntity<?> createMessagEntity (@RequestBody Message message){
+        Message createdMessage = messageService.createMessage(message);
+
+        if(createdMessage!=null){
+            return ResponseEntity.ok(createdMessage);
+        }else{
+            return ResponseEntity.status(400).body("Client error");
+        }
+    }
     @PostMapping("/register")
     public ResponseEntity<?> registerUserEntity( @RequestBody Account account){
         /**
