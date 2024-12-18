@@ -73,9 +73,7 @@ public class SocialMediaController {
             return ResponseEntity.ok(rows);
         }else{
             return ResponseEntity.status(400).body("Client error");
-        }
-              
-      
+        } 
 
     }
 
@@ -137,7 +135,7 @@ public class SocialMediaController {
         Message createdMessage = messageService.createMessage(message);
 
         if(createdMessage!=null){
-            return ResponseEntity.status(HttpStatus.OK).body(createdMessage);
+            return ResponseEntity.ok(createdMessage);
         }else{
             return ResponseEntity.status(400).body("Client error");
         }
